@@ -233,3 +233,35 @@ Tom asked about the optimizer. Ran a DISCIPLINED optimization on `R2_KeltnerAsym
 2. Dead/closed (don't revisit without materially new ideas): mean_reversion, grid_multi_entry, volatility_squeeze, volatility_breakout (~0.5), range_fade (ETH-only 33t), short_only (SOL-only 56t), trend_following BTC (dominated), anchor-trend filters (hurt twice), SOL-native Keltner (0.14-0.48), BTC-native Keltner (~1.1 ceiling), ETH 1h Keltner (~1.34 ceiling), pairs stat-arb (~0.65 ceiling). Jesse optimizer cross-checked.
 3. **The exploration is now deep enough that the strategic picture is clear: one config reaches the bar; every mapped alternative plateaus 0.15-1.35.** Remaining untried ideas are increasingly speculative (2h asym ~1.3 expected; SOL bespoke — weak prior; novel exotic families). Continue probing at lower intensity OR discuss with Tom whether (a) 1 accepted + several 1.0-1.35 diversifiers is an acceptable portfolio reframe, or (b) grind to the 400-backtest ping as specified. Directive says grind — so keep going, but favor genuinely novel mechanisms over more tuning.
 4. Keep logging every backtest to `reports/ALL-RUNS.jsonl` — currently **111 total** (ping threshold 400).
+
+---
+
+# RESEARCH RUN #3 — SPOT DEFENSIVE OVERLAY + PORTFOLIO (started 2026-07-25)
+
+**Goal:** Tom holds BTC/ETH/SOL since 2020. Build (1) a defensive overlay — reduce/exit to stable in bear regimes, rebuy dips — and (2) a portfolio allocation/rebalancing layer. Benchmark = buy-and-hold of the basket (NOT absolute Sharpe; no trade-count constraint). Holdout 2026-01-01→today reserved, one shot, again.
+
+**Venue:** Kraken Pro Spot unsupported in Jesse → research on Binance Spot data (cross-venue equivalence proven in Run #2). Execution venue decided later. Spot = long-only, no leverage. Minimize turnover (fees + taxable events).
+
+**Phase 0 analysis (daily closes, 2022-04-25→2025-12-31, holdout excluded):**
+| Asset | Total | CAGR | Sharpe | MaxDD | Longest UW |
+|---|---|---|---|---|---|
+| BTC | +116.6% | +23.3% | 0.67 | -61.1% | 588d |
+| ETH | -1.3% | -0.3% | 0.34 | -66.8% | 666d |
+| SOL | +22.9% | +5.8% | 0.55 | -90.5% | 607d |
+| EW basket (daily rebal) | +73.2% | +16.1% | 0.56 | -73.3% | 604d |
+| EW basket (hold units) | +46.1% | +10.8% | 0.48 | -70.9% | 608d |
+
+Correlations 0.73-0.83 → the three crash together; defense must come from the stable pocket. Crashes are slow (2022 bear ~8mo; ETH 2024-03→2025-04 -63.9% over 13mo; SOL 2025 -59.8%) → slow regime filters CAN dodge them. Rebalancing alone adds +27pts over hold-units.
+
+**Success criteria (draft):** vs EW rebalanced basket — MaxDD ≤ half (≈-35% or better), capture ≥80% of CAGR, Calmar ≥ 2× (≥0.45), turnover as low as possible.
+
+**Status:** Binance Spot 1m imports running (BTC/ETH/SOL-USDT from 2021-01-01). Next: regime-filter prototypes (long-only) per asset, then portfolio layer. Tom's actual allocation: TBD (asked).
+
+## R3 Phase 1 — validation du filtre combiné (2026-07-25, prototypage Python, données Binance perp propres 0 gap)
+- Data bug trouvé et corrigé: extraction daily par bougie 23h59 perdait des jours (ETH Bybit commençait 2022-03) → extraction DISTINCT ON robuste, Binance Perpetual 2019+.
+- Filtre retenu: sortie si prix<SMA(N) ET EMAfast<EMAslow, re-entrée dès qu'un des deux redevient haussier. Binaire par actif, panier 1/3.
+- Robustesse (35 configs, SMA 150-250 × EMA 40-60/150-250): MaxDD -33.5%..-43.3% TOUTES configs (B&H -72.1%), Calmar médian 0.81, max 1.11 (SMA200/EMA50-200). Colline lisse.
+- Walk-forward: IS 2022-04→2024-06 (best = SMA200/E50-200, Calmar IS 3.11), OOS 2024-07→2025-12: overlay CAGR +2.3% MaxDD -36.0% vs B&H +5.0%/-49.1%. En marché haché sans vrai bear, l'overlay coûte un peu de rendement mais coupe 13 pts de DD. L'alpha est concentré dans l'évitement des hivers longs (bear 2022 évité à 100%).
+- Scénario famille (entrée pic 2021-11-08, pire timing): B&H point bas -85%, fin -1.5% | overlay binaire point bas -50%, fin +79%.
+- Lead-lag BTC→alts: inexistant en daily (corr ~0 à J+1). Rotation force-relative v1: échec. À revisiter avec signaux mensuels.
+- TODO: anti-flash-crash (coupe-circuit chute-depuis-pic) pour le -33% résiduel; implémentation Jesse (imports Binance Spot en cours); allocation & clé API Kraken lecture.
