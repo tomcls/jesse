@@ -304,3 +304,12 @@ Correlations 0.73-0.83 → the three crash together; defense must come from the 
 - 05:0x — Voisinage SOL: 12/44=0.8915/+21.9%an/DD-19.6 (mieux que centre!) | 14/52=voir ALL-RUNS. Colline saine si 14/52 aussi >0.75. Ensuite: trail 4.0 & 5.0 sur 13/48, corrélations R4BTC/R4SOL/R2ETH1h, rapport 07:50.
 - 05:4x — SOL trail sensibilité: 4.0=0.4692 ❌ (pic?) | 4.5=0.8441 | 5.0=voir ALL-RUNS. Si 5.0>0.75 → zone sûre 4.5-5.0+, recommander 4.8. Si 5.0<0.6 → trail 4.5 = pic isolé, flag overfit dans le rapport + recommander corrélations & prudence. Ensuite: corrélations (extraire daily PnL des 3 candidats depuis backtestsession.trades), rapport 07:50.
 - 06:2x — SOL trail: 5.0=1.2568/+39.7%an/DD-18.6/PF1.94/110t ★★★ NOUVEAU MEILLEUR | 5.5=1.0981/+32.1/DD-19.4. Zone 4.5-5.5 toute conforme aux critères. Candidat SOL: EMA13/48 atr3.5 trail5.0 risk2.5 shorts ON. Vérif voisinage EMA à trail5.0 en cours (12/44). Ensuite: corrélations, config finale dans les fichiers, rapport.
+
+## ═══ RAPPORT DU MATIN R4 (07h00, 2026-07-26) ═══
+MISSION ACCOMPLIE. 31 backtests cette nuit.
+- **BTC: R4_BTCKeltnerAsym** — BTC-USD 1h, p64 (4.4/6.8), Sharpe **1.5701**, **+36.7%/an**, DD **-14.5%**, PF 2.09, 130t. Critères durs ✓✓, objectif Sharpe 1.5 ✓.
+- **SOL: R4_SOLTrendFollow** — SOL-USD 4h, EMA12/44 + trailing ATR×5.0, risk 2.5, Sharpe **1.3221**, **+42.3%/an**, DD **-18.6%**, PF 2.09, 107t. Critères durs ✓✓.
+- Corrélations toutes < 0.16 (vs R2 ETH 1h/4h et entre elles) — portefeuille 4 stratégies orthogonal.
+- Configs FIGÉES dans les fichiers (defaults = config). Rapport: reports/R4-BTC-SOL-REPORT.md.
+- ⚠️ Limites: fenêtre inclut 2026 (instruction Tom) → pas de holdout vierge, sélection in-sample → le paper trading est LE test hors-échantillon. Pas de MC/train-test cette nuit (ajoutables). SOL: ne jamais réduire trail sous 4.5 (falaise à 4.0). BTC: ne pas désactiver les shorts (assurance-krach).
+- Décisions pour Tom au réveil: (1) déployer les 2 en paper trading sur tclb? (2) valider davantage d'abord (MC + train/test)? (3) seuils d'alerte proposés: BTC -22%, SOL -28%.

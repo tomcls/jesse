@@ -25,6 +25,15 @@ Projet [Jesse](https://jesse.trade) : recherche systématique de stratégies (ba
 | `R2_KeltnerAsymmetric` | ETH-USD 4h, Kraken Pro Futures | 1.59 @ 108 trades |
 | `R2_KeltnerAsymmetric1h` | ETH-USD 1h, Kraken Pro Futures | 1.56 @ 162 trades |
 
+## Candidates Run #4 — validées cette nuit, prêtes pour le paper trading
+
+| Stratégie | Marché | Sharpe | Annuel | MaxDD |
+|---|---|---|---|---|
+| `R4_BTCKeltnerAsym` | BTC-USD 1h | 1.57 | +36.7% | -14.5% |
+| `R4_SOLTrendFollow` | SOL-USD 4h | 1.32 | +42.3% | -18.6% |
+
+Fenêtre complète 2022→2026-07 (pas de holdout — voir `reports/R4-BTC-SOL-REPORT.md`). Corrélations avec les stratégies en prod : toutes < 0.16.
+
 ## Alternatives validées (non déployées)
 
 | Stratégie | Marché | Sharpe backtest | Note |
