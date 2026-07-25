@@ -289,3 +289,4 @@ Correlations 0.73-0.83 → the three crash together; defense must come from the 
 - 23:0x — setup nuit: cron de relance, script de log recréé, premiers backtests lancés.
 
 - 23:05 — Tom (avant de dormir): backtester sur TOUTE la période en DB (2022→juil. 2026). Cron mis à jour. Baseline BTC (config ETH, fenêtre 2022-2025): Sharpe 1.1717, 174t, DD -19.87%, +28.2%/an → critères durs déjà OK, on pousse le Sharpe.
+- 23:2x — FENÊTRE COMPLÈTE 2022-05-15→2026-07-21 désormais. period sweep BTC 1h (config ETH sinon): p48=0.937/DD-17.7/+18.2%an/186t | p64(ancre)=1.1045/DD-21.4/+25.4%an/193t | p80=voir ALL-RUNS dernière ligne. Direction: 64 > 48. Critères durs OK à p64. Next: p72/p90, puis grid long_mult×short_mult, vol gate, atr_mult, risk 1.4-1.5 (DD headroom), TF 2h. Puis SOL (créer R4_SOLKeltnerAsym, essayer 2h/4h + canaux larges).
