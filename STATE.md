@@ -265,3 +265,12 @@ Correlations 0.73-0.83 → the three crash together; defense must come from the 
 - Scénario famille (entrée pic 2021-11-08, pire timing): B&H point bas -85%, fin -1.5% | overlay binaire point bas -50%, fin +79%.
 - Lead-lag BTC→alts: inexistant en daily (corr ~0 à J+1). Rotation force-relative v1: échec. À revisiter avec signaux mensuels.
 - TODO: anti-flash-crash (coupe-circuit chute-depuis-pic) pour le -33% résiduel; implémentation Jesse (imports Binance Spot en cours); allocation & clé API Kraken lecture.
+
+## R3 Phase 1b — comité, coupe-circuit, frein euphorie, poche stable (2026-07-26)
+- Comité 5 canaux (idée Tom "3 canaux d'info"): majorité >=3/5 améliore les krachs rapides (f25 -36→-22%) mais dégrade le chop 2024. Esprit validé, forme à raffiner (rôles asymétriques).
+- Coupe-circuit chute-depuis-pic-90j: REJETÉ — vend les fonds en V, rachète plus haut (chop 2024 jusqu'à -51%). Toutes variantes testées (12-20%, expo 0/50%).
+- Frein euphorie (idée Tom "gain annuel prévisible"): percentile expanding du rendement 1y glissant → réduction d'expo au-delà du 80e pct. Améliore chop 2024 (-30.4→-27.3%) pour coût ~0. N'a PAS vu venir oct. 2025 (année précédente non extrême). Canal validé en version douce.
+- Poche stable 20% permanente (cap expo 80%): MaxDD -36.0→-29.6%, CAGR 40.1→33.0%, Calmar inchangé 1.11. OBJECTIF -30% ATTEINT mécaniquement.
+- **Portefeuille v1 retenu pour validation**: coeur lent (px>SMA200 OU EMA50>EMA200, binaire par actif, 1/3-1/3-1/3) × cap 80% × frein euphorie doux (>80e pct → 70%). CAGR +32.8%, MaxDD -29.6%, b22 0%, c24 -22.4%. ~10-15 mouvements/an.
+- CONTRAINTE DURE (Tom): zéro levier sur le capital familial, jamais. Objectif profond: redonner confiance à la famille. Règles explicables en une phrase, rapport mensuel montrable.
+- TODO next: walk-forward du stack complet, implémentation Jesse (R3_*), imports Binance Spot à vérifier, holdout 2026 en un tir à la toute fin.
