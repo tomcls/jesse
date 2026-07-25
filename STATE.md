@@ -274,3 +274,16 @@ Correlations 0.73-0.83 → the three crash together; defense must come from the 
 - **Portefeuille v1 retenu pour validation**: coeur lent (px>SMA200 OU EMA50>EMA200, binaire par actif, 1/3-1/3-1/3) × cap 80% × frein euphorie doux (>80e pct → 70%). CAGR +32.8%, MaxDD -29.6%, b22 0%, c24 -22.4%. ~10-15 mouvements/an.
 - CONTRAINTE DURE (Tom): zéro levier sur le capital familial, jamais. Objectif profond: redonner confiance à la famille. Règles explicables en une phrase, rapport mensuel montrable.
 - TODO next: walk-forward du stack complet, implémentation Jesse (R3_*), imports Binance Spot à vérifier, holdout 2026 en un tir à la toute fin.
+
+---
+
+# RESEARCH RUN #4 — BTC + SOL PERPETUAL (nuit du 2026-07-26, directive Tom avant coucher)
+
+**Mission:** trouver 1 stratégie BTC (Sharpe ~1.5 visé) et 1 stratégie SOL, perpetual Kraken Pro Futures long+short.
+**Critères d'acceptation (Tom):** rendement >= ~20%/an ET MaxDD <= 25% (contrainte DURE). Sharpe secondaire si ces deux critères tiennent.
+**Protocole:** fenêtre 2022-04/05 → 2025-12-31, holdout 2026 intouché, exchange EXACTEMENT "Kraken Pro Futures", leverage 3, tout backtest loggé dans reports/ALL-RUNS.jsonl, write_strategy pour les configs (defaults = config).
+**Point de départ:** R2_KeltnerAsymmetric1h sur BTC-USD 1h = Sharpe 1.293 @ 180 trades (vérifier DD/annual). SOL: jamais dépassé ~0.6 au Run #2 (cross-symbol). Familles éliminées: docs/REJECTED-FAMILIES.md.
+**Stratégies de travail:** préfixe R4_. Rapport du matin attendu à 8h00.
+
+## Journal R4
+- 23:0x — setup nuit: cron de relance, script de log recréé, premiers backtests lancés.
