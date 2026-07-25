@@ -1,0 +1,51 @@
+services:
+  ### Jesse's Workspace ################################################  - redis
+  jesse:
+    image: salehmir/jesse:latest
+    depends_on:
+      - postgres
+
+    tty: true
+    env_file:
+      - ../.env
+    ports:
+      - "9000:9000"
+      # Jupyter Port
+      - "8888:8888"
+      # MCP Server Port
+      - "9002:9002"
+    volumes:
+      - ../:/home
+    container_name: jesse
+    command: bash -c "jesse install-live --no-strict && jesse run"
+    networks:
+      - dev-network
+
+  ### PostgreSQL ################################################
+  postgres:
+    image: postgres:14-alpine
+    restart: always
+    ports:
+      - "192.168.1.130:5432:5432"
+    environment:
+      - POSTGRES_USER=jesse_user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=jesse_db
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+    container_name: postgres
+    networks:
+      - dev-network
+
+  # ### Redis ################################################
+  # redis:
+  #   image: redis:6-alpine
+  #   container_name: redis
+  #   command: redis-server --save "" --appendonly no
+    
+volumes:
+  postgres-data:
+
+networks: 
+    dev-network:
+        external: true

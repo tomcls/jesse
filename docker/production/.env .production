@@ -1,0 +1,20 @@
+PASSWORD=Jesse4ever$
+APP_PORT=9000
+
+# If not using docker, you probably want to set this to "localhost"
+POSTGRES_HOST=192.168.1.102
+# POSTGRES_HOST=localhost
+POSTGRES_NAME=jesse
+POSTGRES_PORT=5432
+POSTGRES_USERNAME=jesse
+POSTGRES_PASSWORD=Jesse4ever$
+
+# If not using docker, you probably want to set this to "localhost"
+# REDIS_HOST=localhost
+REDIS_HOST=redis
+REDIS_PORT=6379
+REDIS_PASSWORD=
+
+# Live Trade Only: (Below value doesn't concern you if you haven't installed the live trade plugin)
+# Enter the API token which you created at https://jesse.trade/user/api-tokens:
+LICENSE_API_TOKEN=

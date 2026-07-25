@@ -1,0 +1,107 @@
+[
+  {
+    "quarter": "2022-Q2",
+    "pnl": 1067.68,
+    "pct_return": 10.68,
+    "start_balance": 10000.0,
+    "end_balance": 11067.68
+  },
+  {
+    "quarter": "2022-Q3",
+    "pnl": 1448.63,
+    "pct_return": 13.09,
+    "start_balance": 11067.68,
+    "end_balance": 12516.31
+  },
+  {
+    "quarter": "2022-Q4",
+    "pnl": 170.05,
+    "pct_return": 1.36,
+    "start_balance": 12516.31,
+    "end_balance": 12686.36
+  },
+  {
+    "quarter": "2023-Q1",
+    "pnl": 383.76,
+    "pct_return": 3.02,
+    "start_balance": 12686.36,
+    "end_balance": 13070.11
+  },
+  {
+    "quarter": "2023-Q2",
+    "pnl": -733.53,
+    "pct_return": -5.61,
+    "start_balance": 13070.11,
+    "end_balance": 12336.58
+  },
+  {
+    "quarter": "2023-Q3",
+    "pnl": -1673.77,
+    "pct_return": -13.57,
+    "start_balance": 12336.58,
+    "end_balance": 10662.81
+  },
+  {
+    "quarter": "2023-Q4",
+    "pnl": -560.99,
+    "pct_return": -5.26,
+    "start_balance": 10662.81,
+    "end_balance": 10101.82
+  },
+  {
+    "quarter": "2024-Q1",
+    "pnl": 253.98,
+    "pct_return": 2.51,
+    "start_balance": 10101.82,
+    "end_balance": 10355.8
+  },
+  {
+    "quarter": "2024-Q2",
+    "pnl": 124.69,
+    "pct_return": 1.2,
+    "start_balance": 10355.8,
+    "end_balance": 10480.48
+  },
+  {
+    "quarter": "2024-Q3",
+    "pnl": 896.53,
+    "pct_return": 8.55,
+    "start_balance": 10480.48,
+    "end_balance": 11377.01
+  },
+  {
+    "quarter": "2024-Q4",
+    "pnl": 1867.26,
+    "pct_return": 16.41,
+    "start_balance": 11377.01,
+    "end_balance": 13244.28
+  },
+  {
+    "quarter": "2025-Q1",
+    "pnl": 956.47,
+    "pct_return": 7.22,
+    "start_balance": 13244.28,
+    "end_balance": 14200.75
+  },
+  {
+    "quarter": "2025-Q2",
+    "pnl": 528.46,
+    "pct_return": 3.72,
+    "start_balance": 14200.75,
+    "end_balance": 14729.21
+  },
+  {
+    "quarter": "2025-Q3",
+    "pnl": 3860.36,
+    "pct_return": 26.21,
+    "start_balance": 14729.21,
+    "end_balance": 18589.57
+  },
+  {
+    "quarter": "2025-Q4",
+    "pnl": 602.92,
+    "pct_return": 3.24,
+    "start_balance": 18589.57,
+    "end_balance": 19192.49
+  }
+]

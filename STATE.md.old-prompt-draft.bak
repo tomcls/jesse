@@ -1,0 +1,25 @@
+You have access to the Jesse MCP server (localhost:9002) to create strategies, import candles, run backtests and Monte Carlo simulations. Act as an autonomous quant researcher.
+
+GOAL: 10 trading strategies meeting ALL acceptance criteria below.
+
+DATA & EXECUTION CONTEXT
+- Exchange: Kraken Pro Futures (this is where strategies will run live — never import or validate on data from another exchange)
+- Symbols: BTC-USD, ETH-USD, SOL-USD, XRP-USD — but FIRST verify each pair exists on Kraken Futures with sufficient history; drop any that don't, and log it in the report
+- Trading timeframes: 30m or 1h only. Anchor timeframes (e.g. 4h) allowed for analysis, not for trading
+- Backtest settings: futures mode, realistic Kraken Futures fees (0.02% maker / 0.05% taker), pessimistic slippage. Prefer strategies that enter with limit orders
+
+VALIDATION PROTOCOL (non-negotiable)
+- Split data: in-sample = first 2 years, out-of-sample = final year. NEVER use OOS data during research, tuning, or selection. One single OOS run per candidate strategy, at the very end
+- Acceptance criteria, ALL required:
+  1. Sharpe > 1.5 on the OOS window (in-sample Sharpe is for research only)
+  2. ≥ 100 closed trades over the full period
+  3. Monte Carlo (trade shuffle + candle simulation): original Sharpe should sit near the median of the distribution — the closer to the median, the less likely it's overfit. Reject if it sits in the top 5% tail
+  4. Max drawdown < 30% on OOS
+  5. Pairwise correlation of daily returns with every already-accepted strategy < 0.3
+- Diversity requirement: not all trend following. Include mean reversion, breakout, grid-like multi-entry — different logics, not parameter variants of the same idea. Long/short parameters may differ; short-only is allowed if justified by the data, not by assumptions
+- If a candidate fails OOS, it is dead. Do not re-tune it on OOS data — that would contaminate the holdout. Go back to in-sample research with a different idea
+
+PROCESS
+- Maintain reports/ folder: one markdown per accepted strategy (logic, params, all metrics IS + OOS + MC), plus REJECTED.md (one line per failed candidate + reason) and STATE.md (current progress, next step — update it every cycle, re-read it on every session start)
+- Expect hundreds of backtests. Do not stop until 10 strategies pass, but NEVER lower the acceptance criteria to get there. If after extensive search a criterion seems unreachable, ping me with evidence instead of silently relaxing it
+- No subagents. Do not ask permission for routine work; only ping me if blocked or if something looks wrong (data gaps, API errors, suspicious results)

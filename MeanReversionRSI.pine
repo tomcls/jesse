@@ -1,0 +1,202 @@
+//@version=5
+strategy("Mean Reversion (Jesse-like MEMORY) HTF RSI+ST+ADX + BB touch",
+     overlay=true,
+     initial_capital=10000,
+     commission_type=strategy.commission.percent,
+     commission_value=0.0,
+     pyramiding=0,
+     calc_on_every_tick=true,
+     process_orders_on_close=true)
+
+// ─────────────────────────────────────────────────────────────
+// Inputs
+// ─────────────────────────────────────────────────────────────
+htf              = input.timeframe("240", "Higher timeframe (HTF)")
+windowBars       = input.int(12, "Max bars to keep a setup alive", minval=1)  // memory window
+
+rsiPeriod        = input.int(14, "RSI Period (HTF)", minval=2)
+rsiLongLevel     = input.int(70, "RSI long threshold (HTF)", minval=1, maxval=99)
+rsiShortLevel    = input.int(30, "RSI short threshold (HTF)", minval=1, maxval=99)
+
+stPeriod         = input.int(10, "SuperTrend ATR Period (HTF)", minval=1)
+stFactor         = input.float(3.0, "SuperTrend Factor (HTF)", minval=0.1, step=0.1)
+
+adxPeriod        = input.int(14, "DMI/ADX Period", minval=2)
+adxHtfMin        = input.float(40, "ADX min (HTF)", minval=1)
+adxCurMin        = input.float(20, "ADX min (Current TF)", minval=1)
+
+bbPeriod         = input.int(20, "BB Period", minval=2)
+bbMult           = input.float(2.0, "BB StdDev Mult", minval=0.1, step=0.1)
+
+atrPeriod        = input.int(14, "ATR Period", minval=2)
+slAtrMult        = input.float(6.0, "Stop ATR Mult", minval=0.1, step=0.1)
+
+riskPct          = input.float(3.0, "Risk % of equity per trade", minval=0.1, step=0.1)
+leverage         = input.float(5.0, "Leverage multiplier (position sizing)", minval=1.0, step=0.5)
+
+onlyWhenFlat     = input.bool(true, "Only one position at a time")
+minQty           = input.float(0.001, "Min qty safeguard", minval=0.0, step=0.001)
+
+// ─────────────────────────────────────────────────────────────
+// Current TF indicators
+// ─────────────────────────────────────────────────────────────
+basis = ta.sma(close, bbPeriod)
+dev   = bbMult * ta.stdev(close, bbPeriod)
+bbU   = basis + dev
+bbL   = basis - dev
+
+atr = ta.atr(atrPeriod)
+
+// ADX via DMI (requires diLength, adxSmoothing)
+[plusDI, minusDI, adx] = ta.dmi(adxPeriod, adxPeriod)
+
+// ─────────────────────────────────────────────────────────────
+// HTF indicators
+// ─────────────────────────────────────────────────────────────
+htfRsi = request.security(syminfo.tickerid, htf, ta.rsi(close, rsiPeriod), barmerge.gaps_off, barmerge.lookahead_off)
+
+[htfPlusDI, htfMinusDI, htfAdx] = request.security(
+     syminfo.tickerid, htf,
+     ta.dmi(adxPeriod, adxPeriod),
+     barmerge.gaps_off, barmerge.lookahead_off
+)
+
+[stValueHtf, stDirHtf] = request.security(
+     syminfo.tickerid, htf,
+     ta.supertrend(stFactor, stPeriod),
+     barmerge.gaps_off, barmerge.lookahead_off
+)
+
+htfUp   = stDirHtf == 1
+htfDown = stDirHtf == -1
+
+// ─────────────────────────────────────────────────────────────
+// Filters (evaluated each bar)
+// ─────────────────────────────────────────────────────────────
+condLongRsi  = htfRsi > rsiLongLevel
+condShortRsi = htfRsi < rsiShortLevel
+
+condLongTrend  = htfUp
+condShortTrend = htfDown
+
+condAdxHtf = htfAdx > adxHtfMin
+condAdxCur = adx > adxCurMin
+
+// BB touch triggers
+touchLower = low <= bbL
+touchUpper = high >= bbU
+
+canTrade = onlyWhenFlat ? (strategy.position_size == 0) : true
+
+// ─────────────────────────────────────────────────────────────
+// MEMORY / STATE (this is the "Jesse-like" part)
+// ─────────────────────────────────────────────────────────────
+var bool long_setup_active  = false
+var bool short_setup_active = false
+var int  long_setup_bar     = na
+var int  short_setup_bar    = na
+
+// Store the band price at the moment we got the touch (like placing a limit order there)
+var float long_entry_ref  = na
+var float short_entry_ref = na
+
+// Activate setups on touch (only when flat)
+if canTrade
+    if touchLower
+        long_setup_active := true
+        long_setup_bar    := bar_index
+        long_entry_ref    := bbL
+    if touchUpper
+        short_setup_active := true
+        short_setup_bar    := bar_index
+        short_entry_ref    := bbU
+
+// Expire setups after N bars
+if long_setup_active and (bar_index - long_setup_bar > windowBars)
+    long_setup_active := false
+    long_setup_bar    := na
+    long_entry_ref    := na
+
+if short_setup_active and (bar_index - short_setup_bar > windowBars)
+    short_setup_active := false
+    short_setup_bar    := na
+    short_entry_ref    := na
+
+// Optional: if opposite setup triggers, cancel the other (keeps things clean)
+if long_setup_active and touchUpper
+    long_setup_active := false
+    long_setup_bar    := na
+    long_entry_ref    := na
+
+if short_setup_active and touchLower
+    short_setup_active := false
+    short_setup_bar    := na
+    short_entry_ref    := na
+
+// ─────────────────────────────────────────────────────────────
+// Position sizing based on stored entry ref (BB at touch moment)
+// ─────────────────────────────────────────────────────────────
+pv = syminfo.pointvalue == 0.0 ? 1.0 : syminfo.pointvalue
+
+f_qty_for_risk(_entry, _stop) =>
+    riskValue  = strategy.equity * (riskPct / 100.0)
+    stopDist   = math.abs(_entry - _stop)
+    stopDistOk = math.max(stopDist, syminfo.mintick)
+    lossPerContract = stopDistOk * pv
+    rawQty = riskValue / lossPerContract
+    qty = rawQty * leverage
+    qtySafe = na(qty) or qty <= 0 ? minQty : math.max(qty, minQty)
+    qtySafe
+
+// ─────────────────────────────────────────────────────────────
+// Entry conditions: setup active + (filters become true later)
+// ─────────────────────────────────────────────────────────────
+longFiltersNow  = condLongRsi  and condLongTrend  and condAdxHtf and condAdxCur
+shortFiltersNow = condShortRsi and condShortTrend and condAdxHtf and condAdxCur
+
+// When all filters are satisfied while setup is active => enter
+if canTrade and long_setup_active and longFiltersNow
+    // Use the stored band as reference for risk sizing
+    entryRef = long_entry_ref
+    stopRef  = entryRef - slAtrMult * atr
+    qty      = f_qty_for_risk(entryRef, stopRef)
+
+    strategy.entry("L", strategy.long, qty=qty)
+    // reset setup after entry
+    long_setup_active := false
+    long_setup_bar    := na
+
+if canTrade and short_setup_active and shortFiltersNow
+    entryRef = short_entry_ref
+    stopRef  = entryRef + slAtrMult * atr
+    qty      = f_qty_for_risk(entryRef, stopRef)
+
+    strategy.entry("S", strategy.short, qty=qty)
+    // reset setup after entry
+    short_setup_active := false
+    short_setup_bar    := na
+
+// ─────────────────────────────────────────────────────────────
+// Exits: stop from actual entry price, TP at opposite BB
+// ─────────────────────────────────────────────────────────────
+longStop  = strategy.position_avg_price - slAtrMult * atr
+shortStop = strategy.position_avg_price + slAtrMult * atr
+
+strategy.exit("L-exit", from_entry="L", stop=longStop,  limit=bbU)
+strategy.exit("S-exit", from_entry="S", stop=shortStop, limit=bbL)
+
+// ─────────────────────────────────────────────────────────────
+// Plots / Debug
+// ─────────────────────────────────────────────────────────────
+plot(basis, "BB Basis", linewidth=1)
+plot(bbU,   "BB Upper", linewidth=1)
+plot(bbL,   "BB Lower", linewidth=1)
+plot(stValueHtf, "HTF SuperTrend", linewidth=2)
+
+// setup markers
+plotchar(long_setup_active,  "Long setup active",  "L", location=location.belowbar, size=size.tiny)
+plotchar(short_setup_active, "Short setup active", "S", location=location.abovebar, size=size.tiny)
+
+// trigger markers
+plotchar(canTrade and touchLower, "Touch lower", "●", location=location.belowbar, size=size.tiny)
+plotchar(canTrade and touchUpper, "Touch upper", "●", location=location.abovebar, size=size.tiny)
