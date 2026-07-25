@@ -18,14 +18,19 @@ Projet [Jesse](https://jesse.trade) : recherche systématique de stratégies (ba
 - [`docs/RESEARCH-DIRECTIVE.md`](docs/RESEARCH-DIRECTIVE.md) — la directive des runs de recherche
 - [`docs/REJECTED-FAMILIES.md`](docs/REJECTED-FAMILIES.md) — familles de stratégies testées et éliminées (ne pas retester sans idée nouvelle)
 
-## Stratégies en production (paper trading)
+## En production — paper trading (tclb)
 
-| Stratégie | Marché | Sharpe backtest | Statut |
+| Stratégie | Marché | Sharpe backtest |
+|---|---|---|
+| `R2_KeltnerAsymmetric` | ETH-USD 4h, Kraken Pro Futures | 1.59 @ 108 trades |
+| `R2_KeltnerAsymmetric1h` | ETH-USD 1h, Kraken Pro Futures | 1.56 @ 162 trades |
+
+## Alternatives validées (non déployées)
+
+| Stratégie | Marché | Sharpe backtest | Note |
 |---|---|---|---|
-| `R2_KeltnerAsymmetric` | ETH-USD 4h, Kraken Pro Futures | 1.59 @ 108 trades | ✅ paper trading |
-| `R2_KeltnerAsymmetric1h` | ETH-USD 1h, Kraken Pro Futures | 1.56 @ 162 trades | ✅ paper trading |
-| `R2_RegimeSwitchETH` | ETH-USD 1h | 1.56 @ 177 trades | alternative (ne pas cumuler avec la 1h) |
-| `R2_KeltnerAsymBTC` | BTC-USD 4h | 1.09 @ 97 trades | alternative |
+| `R2_RegimeSwitchETH` | ETH-USD 1h | 1.56 @ 177 trades | ne jamais cumuler avec `R2_KeltnerAsymmetric1h` (corr 0.46) |
+| `R2_KeltnerAsymBTC` | BTC-USD 4h | 1.09 @ 97 trades | sous la barre ; la meilleure jambe BTC est `R2_KeltnerAsymmetric1h` routée sur BTC-USD 1h |
 
 ## Lancement
 
