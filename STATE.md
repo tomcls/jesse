@@ -281,9 +281,11 @@ Correlations 0.73-0.83 → the three crash together; defense must come from the 
 
 **Mission:** trouver 1 stratégie BTC (Sharpe ~1.5 visé) et 1 stratégie SOL, perpetual Kraken Pro Futures long+short.
 **Critères d'acceptation (Tom):** rendement >= ~20%/an ET MaxDD <= 25% (contrainte DURE). Sharpe secondaire si ces deux critères tiennent.
-**Protocole:** fenêtre 2022-04/05 → 2025-12-31, holdout 2026 intouché, exchange EXACTEMENT "Kraken Pro Futures", leverage 3, tout backtest loggé dans reports/ALL-RUNS.jsonl, write_strategy pour les configs (defaults = config).
+**Protocole (MAJ 23h05, instruction Tom):** fenêtre COMPLÈTE 2022-05-15 → 2026-07-21 (holdout 2026 INCLUS sur instruction explicite de Tom — plus de holdout vierge pour R4; garde-fou = paper trading avant déploiement). exchange EXACTEMENT "Kraken Pro Futures", leverage 3, tout backtest loggé dans reports/ALL-RUNS.jsonl, write_strategy pour les configs (defaults = config).
 **Point de départ:** R2_KeltnerAsymmetric1h sur BTC-USD 1h = Sharpe 1.293 @ 180 trades (vérifier DD/annual). SOL: jamais dépassé ~0.6 au Run #2 (cross-symbol). Familles éliminées: docs/REJECTED-FAMILIES.md.
 **Stratégies de travail:** préfixe R4_. Rapport du matin attendu à 8h00.
 
 ## Journal R4
 - 23:0x — setup nuit: cron de relance, script de log recréé, premiers backtests lancés.
+
+- 23:05 — Tom (avant de dormir): backtester sur TOUTE la période en DB (2022→juil. 2026). Cron mis à jour. Baseline BTC (config ETH, fenêtre 2022-2025): Sharpe 1.1717, 174t, DD -19.87%, +28.2%/an → critères durs déjà OK, on pousse le Sharpe.
