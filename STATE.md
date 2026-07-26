@@ -313,3 +313,9 @@ MISSION ACCOMPLIE. 31 backtests cette nuit.
 - Configs FIGÉES dans les fichiers (defaults = config). Rapport: reports/R4-BTC-SOL-REPORT.md.
 - ⚠️ Limites: fenêtre inclut 2026 (instruction Tom) → pas de holdout vierge, sélection in-sample → le paper trading est LE test hors-échantillon. Pas de MC/train-test cette nuit (ajoutables). SOL: ne jamais réduire trail sous 4.5 (falaise à 4.0). BTC: ne pas désactiver les shorts (assurance-krach).
 - Décisions pour Tom au réveil: (1) déployer les 2 en paper trading sur tclb? (2) valider davantage d'abord (MC + train/test)? (3) seuils d'alerte proposés: BTC -22%, SOL -28%.
+
+## R3 — reprise implémentation spot (2026-07-26 matin)
+- Imports Binance Spot COMPLETS: 3×2,925,878 bougies 1m, 2021-01-01→2026-07-25, 0 gap.
+- Stack v1 revalidé sur données SPOT réelles: coeur seul +40.1%/-35.9 (identique au proto perp ✓), stack complet +28.0%/an MaxDD -28.5% vs B&H +16.0%/-73.4. Holdout 2026 RÉSERVÉ pour R3 (contrairement à R4).
+- Walk-forward PASSÉ: le filtre OR serait choisi sur IS seul (top-1 Calmar 3.12); OOS 2024-07→2025-12: stack v1 Calmar 0.26 vs B&H 0.10, DD -28.5 vs -49.1. Rendement OOS modeste (+7.3%/an, période sans bull) mais protection livrée.
+- NEXT: implémentation Jesse R3_SpotRegime (1D, long-only, spot mode Binance Spot), comparaison vs prototype Python, puis couche portefeuille multi-routes.
