@@ -1,0 +1,59 @@
+from jesse.strategies import Strategy
+import jesse.indicators as ta
+from jesse import utils
+
+
+class R3_SpotRegime(Strategy):
+    """
+    Run #3 -- SPOT defensive regime overlay (long-only, no leverage).
+    Prices: Binance Spot data as proxy; fees set to Kraken taker 0.4% in config;
+    real execution will be a custom Kraken executor (Jesse doesn't support Kraken Spot).
+
+    Logic (validated in Python prototypes + walk-forward, see STATE.md R3):
+    - Invested when price > SMA(200, 1D) OR EMA50 > EMA200 (both bearish = exit to stable).
+    - Exit = regime flip only (no stop-loss; the filter IS the defense).
+    - Sizing: alloc_pct of TOTAL balance (equity), capped by free cash, so the
+      3 portfolio routes get equal sleeves regardless of entry order.
+      26 = 3-route portfolio (~78% cap, ~22% stable pocket). 80 = single-asset.
+    Euphoria brake NOT implemented in this v1 (kept for the executor layer).
+    Holdout 2026 RESERVED -- never backtest past 2025-12-31 on this strategy.
+    """
+
+    @property
+    def sma200(self):
+        return ta.sma(self.candles, self.hp['sma_period'])
+
+    @property
+    def ema_fast(self):
+        return ta.ema(self.candles, self.hp['ema_fast'])
+
+    @property
+    def ema_slow(self):
+        return ta.ema(self.candles, self.hp['ema_slow'])
+
+    @property
+    def regime_bull(self):
+        return self.price > self.sma200 or self.ema_fast > self.ema_slow
+
+    def should_long(self) -> bool:
+        return self.regime_bull
+
+    def should_cancel_entry(self) -> bool:
+        return True
+
+    def go_long(self):
+        cash = min(self.available_margin, self.balance * (self.hp['alloc_pct'] / 100.0))
+        qty = utils.size_to_qty(cash, self.price, fee_rate=self.fee_rate)
+        self.buy = qty, self.price
+
+    def update_position(self):
+        if not self.regime_bull:
+            self.liquidate()
+
+    def hyperparameters(self) -> list:
+        return [
+            {'name': 'sma_period', 'type': int, 'min': 150, 'max': 250, 'default': 200},
+            {'name': 'ema_fast', 'type': int, 'min': 30, 'max': 70, 'default': 50},
+            {'name': 'ema_slow', 'type': int, 'min': 150, 'max': 250, 'default': 200},
+            {'name': 'alloc_pct', 'type': int, 'min': 10, 'max': 100, 'default': 26},
+        ]

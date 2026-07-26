@@ -319,3 +319,4 @@ MISSION ACCOMPLIE. 31 backtests cette nuit.
 - Stack v1 revalidé sur données SPOT réelles: coeur seul +40.1%/-35.9 (identique au proto perp ✓), stack complet +28.0%/an MaxDD -28.5% vs B&H +16.0%/-73.4. Holdout 2026 RÉSERVÉ pour R3 (contrairement à R4).
 - Walk-forward PASSÉ: le filtre OR serait choisi sur IS seul (top-1 Calmar 3.12); OOS 2024-07→2025-12: stack v1 Calmar 0.26 vs B&H 0.10, DD -28.5 vs -49.1. Rendement OOS modeste (+7.3%/an, période sans bull) mais protection livrée.
 - NEXT: implémentation Jesse R3_SpotRegime (1D, long-only, spot mode Binance Spot), comparaison vs prototype Python, puis couche portefeuille multi-routes.
+- R3 Jesse: single BTC alloc80 = 0.8945/7t/+28.1%an/DD-25.2 (3e31b4c5). Portfolio v1 available_margin sizing = DD-33.1 ❌ (allocations inégales, ordre-dépendantes) → fix sizing sur self.balance (min avec cash libre). Portfolio v2 balanced = voir ALL-RUNS (a19b14e8).
