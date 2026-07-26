@@ -324,3 +324,5 @@ MISSION ACCOMPLIE. 31 backtests cette nuit.
 - NEXT (day shift): sweep bande 15/25/30 + alloc 28 (léger), singles ETH/SOL pour le dossier, puis A5 achats sur repli (proto Python), A6 comparaison bandes vs mensuel, brouillon R3-ETUDE-FAMILLE.md, et si temps: MC sur R4.
 - A6 TRANCHÉ: bandes 20% optimal (CAGR +27.3%, DD -28.6%, Calmar 0.96, turnover 10.4x). Mensuel/trimestriel CATASTROPHIQUES (DD -36/-46%) car ils retardent les SORTIES de régime → règle: flip de régime = exécution immédiate, bandes = seulement pour les ajustements. Quotidien ≈ bandes mais 60% de turnover en plus.
 - A5 REJETÉ: dip-buy +4%/poche = +0.9pt CAGR mais +2.1pt DD (Calmar 0.96→0.92); +7% strictement pire (Calmar 0.77). La poche stable reste défense pure. Idée "opportunités" de Tom testée honnêtement: ne survit pas.
+- Brouillon étude famille écrit: reports/R3-ETUDE-FAMILLE.md (histoire, 3 règles, chiffres, limites honnêtes, plan de déploiement). À finaliser après holdout + mode ombre.
+- NEXT cycles: singles ETH/SOL Jesse, robustesse Jesse (sma 175/225, band 15/30), MC sur R4 candidates, rapport du soir 18h40.
