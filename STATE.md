@@ -326,3 +326,4 @@ MISSION ACCOMPLIE. 31 backtests cette nuit.
 - A5 REJETÉ: dip-buy +4%/poche = +0.9pt CAGR mais +2.1pt DD (Calmar 0.96→0.92); +7% strictement pire (Calmar 0.77). La poche stable reste défense pure. Idée "opportunités" de Tom testée honnêtement: ne survit pas.
 - Brouillon étude famille écrit: reports/R3-ETUDE-FAMILLE.md (histoire, 3 règles, chiffres, limites honnêtes, plan de déploiement). À finaliser après holdout + mode ombre.
 - NEXT cycles: singles ETH/SOL Jesse, robustesse Jesse (sma 175/225, band 15/30), MC sur R4 candidates, rapport du soir 18h40.
+- MC R4 BTC (6c3e8f56, 200 scénarios): PROFIL PROPRE — original À la médiane (Sharpe 1.5405 vs med 1.5549; profit 260.4% vs 260.6%). Aucune signature d'overfit. Worst-5%: Sharpe 0.77, DD -33.2% (la limite -25 peut être dépassée en malchance — à intégrer aux seuils d'alerte). MC SOL en cours (d69dc902).
