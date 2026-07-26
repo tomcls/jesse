@@ -329,3 +329,14 @@ MISSION ACCOMPLIE. 31 backtests cette nuit.
 - MC R4 BTC (6c3e8f56, 200 scénarios): PROFIL PROPRE — original À la médiane (Sharpe 1.5405 vs med 1.5549; profit 260.4% vs 260.6%). Aucune signature d'overfit. Worst-5%: Sharpe 0.77, DD -33.2% (la limite -25 peut être dépassée en malchance — à intégrer aux seuils d'alerte). MC SOL en cours (d69dc902).
 - MC R4 SOL (d69dc902): ⚠️ seulement 43/200 scénarios complétés (échantillon réduit). Original Sharpe 1.317 SOUS toute la distribution (worst-5 1.41, med 2.25), profit 335% vs med 671% — original dans la queue DÉFAVORABLE = aucune signature d'overfit (même anomalie famille que R2: le bootstrap génère des chemins plus faciles). DD original -18.7 vs med -20.3, worst-5 -28.4. Trades 107 vs plage 109-140 (limite basse). Verdict: pas de rejet; stats affaiblies par n=43.
 - Robustesse moteur Jesse: sma175 = 0.5447/+13.8%an/DD-32.1 — sensibilité moteur 1D plus forte que le proto daily-close (noté honnêtement au dossier; sma200 = défaut classique pré-enregistré, pas un pick post-hoc). Config canonique restaurée dans le fichier (sma200/50/200, alloc26, band20) avec docstring complet.
+
+## ═══ RAPPORT DU SOIR R3 (rédigé 12h30, journée bouclée en avance) ═══
+Programme du jour ENTIÈREMENT couvert:
+1. **Implémentation Jesse opérationnelle**: R3_SpotRegime, portefeuille 3 routes (Binance Spot data, frais Kraken 0.4%): Sharpe 0.73, +21.1%/an, DD -27.6%, 26 trades (6aee5f66). 3 bugs de sizing résolus en route (available_margin → portfolio_value → rééquilibrage à bandes via take_profit/buy; reduce/increase_position n'existent PAS dans l'API).
+2. **A6 tranché**: bandes 20% optimal; mensuel/trimestriel catastrophiques (retardent les sorties de régime). Règle: flip = immédiat, bandes = trims uniquement.
+3. **A5 rejeté**: dip-buying dégrade le Calmar dans toutes les variantes.
+4. **Étude famille rédigée**: reports/R3-ETUDE-FAMILLE.md (brouillon complet, montrable).
+5. **MC des R4**: BTC propre (original = médiane), SOL sans signature d'overfit (queue défavorable; n=43/200 ⚠️). Worst-5% DD: -33/-28 — seuils d'alerte à prévoir en conséquence.
+6. **Robustesse moteur**: sma175 dégrade (sensibilité moteur > proto) — noté; sma200 = défaut pré-enregistré.
+7. **BONUS — executor/signal_engine.py CRÉÉ ET TESTÉ EN RÉEL** (Phase C): calcule les régimes sur données publiques Kraken, aucun ordre. Première lecture live 2026-07-26: BTC/ETH/SOL tous BEAR → cible 100% stable. Le mode ombre est techniquement amorcé.
+DÉCISIONS POUR TOM: (a) déployer R4 BTC+SOL en paper trading sur tclb? (b) lancer le mode ombre spot (cron quotidien signal_engine + Telegram)? (c) le tir unique de holdout 2026 pour R3 — quand?
