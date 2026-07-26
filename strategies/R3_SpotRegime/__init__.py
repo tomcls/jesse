@@ -6,16 +6,26 @@ from jesse import utils
 class R3_SpotRegime(Strategy):
     """
     Run #3 -- SPOT defensive regime overlay (long-only, no leverage) + band rebalancing.
+    CANONICAL CONFIG (frozen): sma_period=200, ema_fast=50, ema_slow=200,
+    alloc_pct=26 (x3 routes = 78% cap, 22% stable pocket), rebalance_band_pct=20.
+
     Prices: Binance Spot data as proxy; fees set to Kraken taker 0.4% in config;
     real execution will be a custom Kraken executor (Jesse doesn't support Kraken Spot).
 
-    Logic (validated in Python prototypes + walk-forward, see STATE.md R3):
-    - Invested when price > SMA(200, 1D) OR EMA50 > EMA200 (both bearish = exit to stable).
-    - Exit = regime flip only (no stop-loss; the filter IS the defense).
-    - Sleeve target = alloc_pct of portfolio value. BAND REBALANCING via Jesse API:
-      trim with self.take_profit at market price, add with self.buy while long.
-      Prevents one sleeve from dominating portfolio DD (the -39% lesson).
-    Euphoria brake NOT implemented in this v1 (kept for the executor layer).
+    Portfolio backtest (3 routes, 2022-04-25 -> 2025-12-31, id 6aee5f66):
+    Sharpe 0.7343, +21.1%/yr, MaxDD -27.58%, 26 trades, PF 3.08
+    vs buy-and-hold +16%/yr, MaxDD -73%.
+
+    - Invested when price > SMA200(1D) OR EMA50 > EMA200; both bearish = exit to stable.
+    - Regime flips execute IMMEDIATELY; band 20% only for rebalancing trims
+      (monthly/quarterly rebalancing of exits is catastrophic: -36/-46% DD).
+    - Band rebalancing via Jesse API: trim = self.take_profit at market price,
+      add = self.buy while long. (reduce_position/increase_position DO NOT exist.)
+    - Robustness: Python grid = all 35 filter configs keep DD -33..-43 vs B&H -73;
+      engine-level sma175 variant degrades (+13.8%/yr, DD -32) -- sma200 is the
+      pre-registered classic default, not a post-hoc optimization.
+    - A5 dip-buying tested and REJECTED (worsens Calmar). Euphoria brake kept
+      for the executor layer, not in this strategy.
     Holdout 2026 RESERVED -- never backtest past 2025-12-31 on this strategy.
     """
 
