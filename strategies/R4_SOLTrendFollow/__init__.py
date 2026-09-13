@@ -1,6 +1,7 @@
 from jesse.strategies import Strategy
 import jesse.indicators as ta
 from jesse import utils
+from jesse import exceptions
 
 
 class R4_SOLTrendFollow(Strategy):
@@ -63,13 +64,30 @@ class R4_SOLTrendFollow(Strategy):
 
     def update_position(self):
         qty = abs(self.position.qty)
+        # `self.average_stop_loss` LEVE InvalidStrategy tant qu'aucun stop n'a
+        # ete pose DANS CE PROCESSUS : `Strategy._stop_loss` ne vit qu'en
+        # memoire (ecrit uniquement par _prepare_stop_loss(), appele depuis
+        # _execute_long/_execute_short) et n'est restaure par aucun chemin.
+        # La garde `is None` d'origine ne pouvait donc JAMAIS etre vraie : la
+        # propriete renvoie un float ou leve, jamais None.
+        #
+        # Inatteignable en run continu (une position ne s'ouvre que par
+        # go_long/go_short, qui posent toujours stop_loss) -- d'ou l'absence
+        # d'effet sur les backtests et sur la config gelee. Mais en LIVE une
+        # session relancee herite d'une position ouverte (restauree depuis
+        # Postgres) sans son _stop_loss : update_position() plantait alors des
+        # le premier candle. Constate en lisant jesse 3.1.4 le 2026-09-13.
+        try:
+            current_stop = self.average_stop_loss
+        except exceptions.InvalidStrategy:
+            current_stop = None
         if self.is_long:
             new_stop = self.price - self.atr * self.hp['trail_mult']
-            if self.average_stop_loss is None or new_stop > self.average_stop_loss:
+            if current_stop is None or new_stop > current_stop:
                 self.stop_loss = qty, new_stop
         elif self.is_short:
             new_stop = self.price + self.atr * self.hp['trail_mult']
-            if self.average_stop_loss is None or new_stop < self.average_stop_loss:
+            if current_stop is None or new_stop < current_stop:
                 self.stop_loss = qty, new_stop
 
     def hyperparameters(self) -> list:
